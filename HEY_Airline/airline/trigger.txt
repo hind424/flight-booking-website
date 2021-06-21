@@ -1,0 +1,42 @@
+CREATE OR REPLACE FUNCTION transaction()
+RETURNS trigger AS
+$func$
+BEGIN
+INSERT INTO public.bookings_transaction(trip_id_id, user_id, DATE)
+VALUES(NEW.trip_id_id, NEW.user_id, current_date);
+RETURN NEW;
+END;
+$func$
+LANGUAGE 'plpgsql';
+
+
+CREATE TRIGGER add_transact
+AFTER INSERT
+ON bookings_passenger
+FOR EACH ROW
+EXECUTE PROCEDURE transaction();
+
+CREATE OR REPLACE FUNCTION discount()
+RETURNS trigger AS
+$func$
+DECLARE rows INTEGER;
+BEGIN
+rows := (SELECT COUNT(*) FROM bookings_transaction
+WHERE (user_id = NEW.user_id) AND (date > (current_TIMESTAMP - INTERVAL '1' MONTH)));
+IF rows >= 3 THEN
+UPDATE bookings_user_info 
+SET "DISCOUNT" = 10
+WHERE user_id = NEW.user_id;
+END IF;
+RETURN NULL;
+END;
+$func$
+LANGUAGE 'plpgsql';
+
+CREATE TRIGGER update_discount
+AFTER INSERT
+ON bookings_transaction
+FOR EACH ROW
+EXECUTE PROCEDURE discount();
+
+

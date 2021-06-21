@@ -1,0 +1,33 @@
+{% extends "bookings/base.html" %}
+{% load static %}
+{% block title %}
+Add Passengers
+{% endblock %}
+{% block body_block %}
+<div class="container">
+<form id="form-container" method = "POST" action = "{% url 'book' %}">
+  {% csrf_token %}
+  <h3>Add Passengers</h3>
+      {{ passenger_set.management_form }}
+      {% for form in passenger_set %}
+      <table class="table table-borderedr passenger-form">
+        <tr>
+      {{form.as_table}}
+      {% if formset.can_delete %}
+      {{form.DELETE}}
+      {% endif %}
+      <th></th>
+      <hr>
+    </tr>
+      </table>
+      {% endfor %}
+    <button class="btn btn-outline-success" type="button" id="addRow" onclick="addForm()">+</button>
+    <button class="btn btn-success" type="submit" >Submit</button>
+    </form>
+    </div>
+
+    <div class="container-fluid" id="banner">
+      <img src="{% static 'bookings/images/passenger.jpg' %}" class="img-fluid" alt="...">
+    </div>
+  
+{% endblock%}

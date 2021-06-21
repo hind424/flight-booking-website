@@ -1,0 +1,103 @@
+{% extends "bookings/base.html" %}
+{% load static %}
+{% block title %}
+Home
+{% endblock %}
+{% block body_block %}
+<hr>
+<div class="container">
+  {% if user.is_authenticated %}
+  <div class="jumbotron text-success bg-warning bg-gradient shadow-lg">
+    <h1>Welcome to the HEY Airlines !</h1>
+        <h2>Hello, {{ user.username }}</h2>
+  </div>
+  {% else %}
+  <div class="jumbotron bg-warning shadow-lg">
+      <h1>Welcome to the HEY Airlines !</h1>
+        <h2>Register or Login if you'd like to book tickets.</h2>
+  {% endif %}
+  </div>
+</div>
+
+{% if user.is_authenticated %}
+<div>
+  <div class="container">
+  <form method = "POST" action={% url 'search' %}>
+    {% csrf_token %}
+    <table class="table table-bordered table-hover table-info shadow-lg" id="search_table">
+      <caption>Search Flights</caption>
+      <thead>
+        <tr>
+          <th scope="col"><label for="from" class="font-weight-bold">From</label>
+          </th>
+          <th scope="col"><label for="to" class="font-weight-bold">To</label>
+          </th>
+          <th scope="col">Trip way</th>
+          <th scope="col"><label for="departure-date" class="font-weight-bold">Departure date</label>
+          <th scope="col" id="hide1"><label for="return-date" class="font-weight-bold">Return date</label>
+          <th scope="col"><label for="number-of-travellers" class="font-weight-bold">Number of Travellers</label>
+          <th scope="col"><label for="class" class="font-weight-bold">Class</label>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select class="form-select form-select-sm" name="from" aria-label=".form-select-sm example" required>
+              {% for airport in airports %}
+                <option value="{{ airport.AIRPORT_CODE }}">{{ airport.CITY }}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <select class="form-select form-select-sm" name="to" aria-label=".form-select-sm example" required>
+              {% for airport in airports %}
+                <option value="{{ airport.AIRPORT_CODE }}">{{ airport.CITY }}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tripWay" id="one-way" value = '1' >
+              <label class="form-check-label" for="tripway">
+                One Way
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tripWay" id="round-trip" value = '2' checkedgit >
+              <label class="form-check-label" for="tripway">
+                Round trip
+              </label>
+            </div>
+          </td>
+          <td>
+              <input class="form-control" name="departure-date" placeholder="departure" type="date" required/>
+          </td>
+          <td id="hide2">
+            <input class="form-control" name="return-date" placeholder="return" type="date"/>
+        </td>
+        <td>
+          <input class="form-control" name="number-of-travellers" placeholder="Number of travellers" type="number" min="0" max="100" />
+        </td>
+        <td>
+          <select class="form-select form-select-sm" name="class" aria-label=".form-select-sm example">
+            <option selected>Class</option>
+            <option value="1">First</option>
+            <option value="2">Economy</option>
+            <option value="3">Business</option>
+          </select>
+        </td>
+        </tr>
+      </tbody>
+    </table>
+  <button class="btn btn-outline-success w-25" type="submit">Search</button>
+  </form>
+</div>
+</div>
+{% else %}
+<div class="container-fluid" id="banner">
+  <img src="{% static 'bookings/images/banner.jpg' %}" class="img-fluid" alt="...">
+  </div>
+{% endif %}
+
+
+{% endblock %}

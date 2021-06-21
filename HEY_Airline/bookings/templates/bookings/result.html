@@ -1,0 +1,71 @@
+{% extends "bookings/base.html" %}
+{% load static %}
+{% block title %}
+Search Result
+{% endblock %}
+{% block body_block %}
+<div class="container">
+    <table class="table table-bordered table-hover  shadow-lg">
+      <caption>Search Result</caption>
+        <thead>
+          <tr class="table-dark">
+            <th scope="col" rowspan="2">Airplane Number</th>
+            <th scope="col" rowspan="2">Departure Airport</th>
+            <th scope="col" rowspan="2">Departure Time</th>
+            <th scope="col" rowspan="2">Arival Airport</th>
+            <th scope="col" rowspan="2">Arival Time</th>
+            <th scope="colgroup" colspan="3">Available Seats</th>
+            <th scope="col" rowspan="2">Price</th>
+            <th scope="col" rowspan="2">Currency</th>
+          </tr>
+          <tr class="table-dark">
+            <th scope="col">F</th>
+            <th scope="col">B</th>
+            <th scope="col">E</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ft, s, f in planes %}
+          {% if s.FIRST and s.BUSINESS and s.ECONOMY > 0 %} 
+          <tr class="table-success">
+            <td>{{ ft.airplane_number_id }}</td>
+            <td>{{ d }}</td>
+            <td>{{ ft.DEPART_TIME }}</td>
+            <td>{{ a }}</td>
+            <td>{{ ft.ARIVAL_TIME }}</td>
+            <td>{{ s.FIRST }}</td>
+            <td>{{ s.BUSINESS }}</td>
+            <td>{{ s.ECONOMY }}</td>
+            <td>{{ f.AMOUNT }}</td>
+            <td>{{ f.CURRENCY }}</td>
+            <td><a role="button"  class="btn btn-success" href="{% url 'trip' ft.TRIP_ID ft.airplane_number_id %}">Book now</a></td>
+        </tr>
+        {% else %}
+        <tr class="table-danger">
+          <td>{{ ft.airplane_number_id }}</td>
+            <td>{{ d }}</td>
+            <td>{{ ft.DEPART_TIME }}</td>
+            <td>{{ a }}</td>
+            <td>{{ ft.ARIVAL_TIME }}</td>
+            <td>{{ s.FIRST }}</td>
+            <td>{{ s.BUSINESS }}</td>
+            <td>{{ s.ECONOMY }}</td>
+            <td>{{ f.AMOUNT }}</td>
+            <td>{{ f.CURRENCY }}</td>
+          <td><a role="button" class="btn btn-danger" href="#">Book now</a></td>
+      </tr>
+      {%endif%}
+        {% endfor %}
+        </tbody>
+        </table>
+        {% if available == False %}
+          <div class="container" id="oops">
+          <h3><b>Oops! No Flights Available For The Selected Route.</b></h3>
+          <img src="{% static 'bookings/images/oops.jpg' %}" class="img-fluid" alt="...">
+        </div>
+        {% endif %}
+</div>
+<div class="container-fluid" id="banner">
+  <img src="{% static 'bookings/images/result.jpg' %}" class="img-fluid" alt="...">
+  </div>
+{% endblock%}
